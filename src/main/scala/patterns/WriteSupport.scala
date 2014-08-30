@@ -6,11 +6,11 @@ trait WriteSupport {
   def withWriter[A](path: Path)(f: BufferedWriter => A) {
     var writer: BufferedWriter = null
     try {
-      val file = new File(path.value)
-      writer = new BufferedWriter(new FileWriter(file))
+      writer = new BufferedWriter(new FileWriter(path.value))
       f(writer)
     } finally {
-      writer.close()
+      if (writer != null)
+        writer.close()
     }
   }
 }

@@ -1,12 +1,26 @@
 package patterns
 
-trait Persist[String] {
-  def get: String
+trait Persist[A] {
+  def value: A
 
-  def map(f: String => String): Persist[String]
+  def map[B](f: A => B): Persist[B]
 }
 
-object Persist {
+case class PersistFileImpl[A](path: Path, content: A) extends Persist[A] {
+  //  override def value: String = content
+  //
+  //  override def map[String](f: (String) => String): Persist[String] = {
+  //    Persist(path, f(content))
+  //  }
+  override def value: A = content
 
-  def apply(path: Path, content: String): Persist[String] = ???
+  override def map[B](f: (A) => B): Persist[B] = Persist(path, f(content))
+}
+
+object Persist extends WriteSupport {
+
+  def apply[A](path: Path, content: A): Persist[A] = {
+    withWriter(path)(_.write(content.toString))
+    PersistFileImpl(path, content)
+  }
 }
