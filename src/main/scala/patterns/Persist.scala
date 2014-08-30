@@ -7,11 +7,6 @@ trait Persist[A] {
 }
 
 case class PersistFileImpl[A](path: Path, content: A) extends Persist[A] {
-  //  override def value: String = content
-  //
-  //  override def map[String](f: (String) => String): Persist[String] = {
-  //    Persist(path, f(content))
-  //  }
   override def value: A = content
 
   override def map[B](f: (A) => B): Persist[B] = Persist(path, f(content))
